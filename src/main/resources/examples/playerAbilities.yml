@@ -1,0 +1,194 @@
+
+# 1) Blink Dash – Wind
+
+blink-dash:
+  type: Wind
+  requiredLevel: 3
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 5
+  script:
+    - "particle name=PORTAL count=30 radius=1 @self"
+    - "velocity x=@self.facingX() y=0 z=@self.facingZ() @self"
+    - "sound name=ENTITY_ENDERMAN_TELEPORT volume=1.0 pitch=1.2 @self"
+
+# 5) Gust Push – Wind
+gust-push:
+  type: Wind
+  requiredLevel: 5
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 6
+  script:
+    - "particle name=CLOUD count=20 radius=2 @nearby"
+    - "sound name=ENTITY_PHANTOM_FLAP volume=1.0 pitch=1.0 @self"
+    - "effect type=SLOW duration=60 amplifier=1 @nearby"
+
+# 6) Sky Dive – Wind
+sky-dive:
+  type: Wind
+  requiredLevel: 9
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 8
+  script:
+    - "sound name=ENTITY_PARROT_IMITATE_PHANTOM volume=1.0 pitch=1.2 @self"
+    - "velocity x=0 y=1 z=0 @self"
+    - "particle name=CLOUD count=30 radius=1 @self"
+
+# 7) Whirlwind – Wind
+whirlwind:
+  type: Wind
+  requiredLevel: 12
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 10
+  script:
+    - "particle name=SWEEP_ATTACK count=25 radius=2 @nearby"
+    - "sound name=ENTITY_EVOKER_PREPARE_ATTACK volume=1.0 pitch=0.8 @self"
+    - "effect type=LEVITATION duration=40 amplifier=1 @nearby"
+
+# 2) Thunder Strike – Fire
+thunder-strike:
+  type: Fire
+  requiredLevel: 7
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 5
+  script:
+    - "sound name=ENTITY_LIGHTNING_BOLT_IMPACT volume=1.0 pitch=1.0 @self"
+    - "lightning @nearby"
+    - "particle name=SMOKE_LARGE count=50 radius=2 @nearby"
+
+# 8) Fire Wave – Fire
+fire-wave:
+  type: Fire
+  requiredLevel: 10
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 7
+  script:
+    - "sound name=ENTITY_BLAZE_HURT volume=1.0 pitch=1.2 @self"
+    - "particle name=FLAME count=30 radius=3 @nearby"
+    - "effect type=HARM duration=1 amplifier=1 @nearby"
+
+# 9) Magma Shield – Fire
+magma-shield:
+  type: Fire
+  requiredLevel: 13
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 12
+  script:
+    - "sound name=ENTITY_BLAZE_AMBIENT volume=1.0 pitch=0.9 @self"
+    - "particle name=LAVA count=20 radius=1 @self"
+    - "effect type=FIRE_RESISTANCE duration=200 amplifier=0 @self"
+
+# 10) Lava Eruption – Fire
+lava-eruption:
+  type: Fire
+  requiredLevel: 15
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 15
+  script:
+    - "sound name=ENTITY_GENERIC_EXPLODE volume=1.0 pitch=0.7 @self"
+    - "particle name=DRIP_LAVA count=40 radius=2 @nearby"
+    - "effect type=HARM duration=1 amplifier=2 @nearby"
+
+# 3) Berserk Rage – Earth
+berserk-rage:
+  type: Earth
+  requiredLevel: 6
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 5
+  script:
+    - "sound name=ENTITY_WOLF_GROWL volume=1.0 pitch=0.8 @self"
+    - "effect type=SPEED duration=100 amplifier=2 @self"
+    - "effect type=INCREASE_DAMAGE duration=100 amplifier=1 @self"
+    - "delay ticks=100 then=\"effect type=MINING_FATIGUE duration=40 amplifier=1 @self\""
+
+# 11) Tremor – Earth
+tremor:
+  type: Earth
+  requiredLevel: 8
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 7
+  script:
+    - "sound name=ENTITY_GOAT_HORN_SOUND volume=1.0 pitch=1.0 @self"
+    - "particle name=EXPLOSION_LARGE count=20 radius=2 @nearby"
+    - "effect type=SLOW duration=60 amplifier=1 @nearby"
+
+# 12) Rock Armor – Earth
+rock-armor:
+  type: Earth
+  requiredLevel: 11
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 10
+  script:
+    - "sound name=ENTITY_IRON_GOLEM_REPAIR volume=1.0 pitch=0.8 @self"
+    - "particle name=BLOCK_CRACK block=STONE count=30 radius=1 @self"
+    - "effect type=RESISTANCE duration=200 amplifier=1 @self"
+
+# 13) Quake – Earth
+quake:
+  type: Earth
+  requiredLevel: 14
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 14
+  script:
+    - "sound name=ENTITY_ELDER_GUARDIAN_CURSE volume=1.0 pitch=0.5 @self"
+    - "particle name=SMOKE_LARGE count=50 radius=3 @nearby"
+    - "effect type=WEAKNESS duration=80 amplifier=1 @nearby"
+
+# 4) Frost Nova – Water
+frost-nova:
+  type: Water
+  requiredLevel: 9
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 5
+  script:
+    - "sound name=ENTITY_POLAR_BEAR_WARNING volume=1.0 pitch=0.8 @nearby"
+    - "effect type=SLOW duration=100 amplifier=1 @nearby"
+    - "particle name=SPLASH count=50 radius=2 @nearby"
+
+# 14) Healing Wave – Water
+healing-wave:
+  type: Water
+  requiredLevel: 12
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 10
+  script:
+    - "sound name=ENTITY_DOLPHIN_PLAY volume=1.0 pitch=1.2 @self"
+    - "effect type=REGENERATION duration=100 amplifier=1 @nearby"
+    - "particle name=HEART count=20 radius=2 @nearby"
+
+# 15) Ice Spike – Water
+ice-spike:
+  type: Water
+  requiredLevel: 14
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 12
+  script:
+    - "sound name=ENTITY_SNOW_GOLEM_SHOOT volume=1.0 pitch=1.0 @self"
+    - "particle name=SNEEZE count=30 radius=1 @nearby"
+    - "effect type=SLOW duration=80 amplifier=2 @nearby"
+
+# 16) Water Shield – Water
+water-shield:
+  type: Water
+  requiredLevel: 16
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_AIR"
+  cooldown: 15
+  script:
+    - "sound name=ENTITY_TURTLE_DEATH volume=1.0 pitch=0.8 @self"
+    - "particle name=DRIP_WATER count=25 radius=1 @self"
+    - "effect type=WATER_BREATHING duration=200 amplifier=0 @self"

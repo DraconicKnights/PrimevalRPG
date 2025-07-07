@@ -1,0 +1,203 @@
+portal-activate-nether:
+  event: PlayerInteractEvent
+  condition: "action:RIGHT_CLICK_BLOCK & at_block:NETHER_PORTAL & item:TRIPWIRE_HOOK & flag:beatNetherGatekeeper"
+  cancel: true
+  script:
+    # 1) initial trigger sound + flash
+    - "sound name=BLOCK_PORTAL_TRIGGER volume=1.2 pitch=1.3 @self"
+    - "particle name=END_ROD count=30 radius=1 offsetX=0 offsetY=1 offsetZ=0 @clickedBlock"
+    # 2) swirling portal energy
+    - "delay ticks=2"
+    - "particle name=SPELL_WITCH count=50 radius=2 offsetX=1 offsetY=1 offsetZ=1 @clickedBlock"
+    - "sound name=ENTITY_BLAZE_AMBIENT volume=0.6 pitch=0.7 @self"
+    # 3) final “unlock” moment
+    - "delay ticks=4"
+    - "sound name=ENTITY_LIGHTNING_BOLT_THUNDER volume=1.0 pitch=0.5 @self"
+    - "effect type=LIGHTNING @clickedBlock"
+    - "flagSet name=activatedNetherPortal @self"
+    - "actionbar text='§aThe portal hums with dark energy…' @self"
+    - "title title='§aPORTAL ACTIVATED!' subtitle='Entering the Nether…' fadeIn=5 stay=40 fadeOut=5 @self"
+
+portal-repel-unactivated:
+  event: PlayerPortalEvent
+  condition: "to_world:world_nether & !flag:activatedNetherPortal"
+  cancel: true
+  script:
+    # 1) warning UI
+    - "title title='§cPORTAL DORMANT' subtitle='Use your Nether Key to awaken it' fadeIn=5 stay=50 fadeOut=5 @self"
+    - "sound name=ENTITY_ENDERMAN_SCREAM volume=1.0 pitch=0.8 @self"
+    - "particle name=SMOKE_NORMAL count=20 radius=2 offsetX=0 offsetY=1 offsetZ=0 @self"
+
+    # 2) small pause before the blast‐off
+    - "delay ticks=2"
+
+    # 3) repel the player: radial knockback + slight upward boost
+    - "knockback strength=1.5 @self"
+    - "velocity x=0.0 y=0.4 z=0.8 @self"
+    - "sound name=ENTITY_ENDERMAN_TELEPORT volume=0.9 pitch=1.3 @self"
+
+    # 4) portal swirling smoke/portal particles around the portal block
+    - "particle name=PORTAL count=40 radius=3 offsetX=0 offsetY=1 offsetZ=0 @clickedBlock"
+    - "particle name=SMOKE_LARGE count=40 radius=3 offsetX=0 offsetY=1 offsetZ=0 @clickedBlock"
+    - "sound name=BLOCK_PORTAL_AMBIENT volume=0.5 pitch=0.6 @clickedBlock"
+
+portal-enter-after-activation:
+  event: PlayerPortalEvent
+  condition: "to_world:world_nether & flag:activatedNetherPortal"
+  cancel: false
+  script:
+    # 1) clear the flag + immediate buildup start
+    - "flagClear name=activatedNetherPortal @self"
+    - "particle name=EXPLOSION_NORMAL count=1 radius=0 @self"
+    - "sound  name=ENTITY_ENDER_DRAGON_FLAP volume=0.8 pitch=1.0 @self"
+
+    # 2) at +3 ticks, do EVERYTHING below
+    - "delay ticks=3"
+    - "particle name=END_ROD   count=80  radius=3 offsetX=1 offsetY=1 offsetZ=1 @self"
+    - "sound name=BLOCK_ENDER_CHEST_OPEN volume=1.0 pitch=1.2 @self"
+
+    # 3) at +5 ticks from *now*, do EVERYTHING below
+    - "delay ticks=5"
+    - "particle name=EXPLOSION_HUGE  count=1 radius=0 @self"
+    - "sound name=BLOCK_PORTAL_TRAVEL volume=1.0 pitch=0.9 @self"
+    - "title title='§6Entering the Nether…' subtitle='Brace yourself!' fadeIn=5 stay=40 fadeOut=5 @self"
+
+    # 4) at +20 ticks from there, do post-teleport effect
+    - "delay ticks=20"
+    - "particle name=SOUL_FIRE_FLAME count=30 radius=2 offsetX=0 offsetY=1 offsetZ=0 @self"
+    - "sound name=ENTITY_BLAZE_AMBIENT volume=0.5 pitch=0.6 @self"
+
+enter_arena_spawn_mobs:
+  interval: 80
+  condition: "in_region:Mob-Test"
+  script:
+    # spawn 4 custom mobs in a circle ~8 blocks out
+    - "spawnCustomMob nameId=test count=4 radius=8 cap=6 @self"
+
+# -------------------------------------------------------------------
+# 1) End–Portal Activation
+# -------------------------------------------------------------------
+portal-activate-end:
+  event:        PlayerInteractEvent
+  condition:    "action:RIGHT_CLICK_BLOCK & at_block:END_PORTAL_FRAME & item:ENDER_EYE & !flag:activatedEndPortal"
+  cancel:       true
+  script:
+    # 1) spark + whisper
+    - "sound     name=ENTITY_ENDER_EYE_DEATH  volume=1.2  pitch=1.0  @self"
+    - "particle  name=ENCHANT              count=25  radius=1  offsetX=0 offsetY=1 offsetZ=0  @clickedBlock"
+    - "delay     ticks=3"
+    # 2) portal swirl
+    - "particle  name=PORTAL               count=60  radius=2  offsetX=1 offsetY=1 offsetZ=1  @clickedBlock"
+    - "sound     name=ENTITY_ENDERMAN_AMBIENT  volume=0.8  pitch=0.5  @self"
+    - "effect    type=ENDER_SIGNAL        @clickedBlock"
+    # 3) final unlock
+    - "sound     name=ENTITY_DRAGON_DEATH  volume=1.0  pitch=0.8  @self"
+    - "flagSet   name=activatedEndPortal  @self"
+    - "actionbar text='§5The End Portal glows with cosmic energy…' @self"
+    - "title     title='§5PORTAL AWAKENED!' subtitle='Your destiny awaits…' fadeIn=10 stay=50 fadeOut=10 @self"
+
+# -------------------------------------------------------------------
+# 2) Block Entry Until Activated
+# -------------------------------------------------------------------
+portal-repel-unactivated-end:
+  event:        PlayerPortalEvent
+  condition:    "to_world:world_the_end & !flag:activatedEndPortal"
+  cancel:       true
+  script:
+    - "title     title='§cPORTAL DORMANT' subtitle='It resists your presence' fadeIn=5 stay=40 fadeOut=5  @self"
+    - "sound     name=ENTITY_ENDERMAN_SCREAM  volume=1.0  pitch=1.0  @self"
+    - "particle  name=SMOKE_LARGE          count=30  radius=2  @self"
+    - "delay     ticks=3"
+    - "knockback strength=2.0              @self"
+
+# -------------------------------------------------------------------
+# 3) Optional “Trial of the End” on First Entry
+# -------------------------------------------------------------------
+end-trial-start:
+  event:        PlayerPortalEvent
+  condition:    "to_world:world_the_end & flag:activatedEndPortal & !flag:completedEndTrial"
+  cancel:       false
+  script:
+    # dramatic intro
+    - "sound     name=ENTITY_WITHER_SPAWN  volume=1.0  pitch=0.6  @self"
+    - "title     title='§5TRIAL OF THE END' subtitle='Survive the onslaught!' fadeIn=10 stay=60 fadeOut=10  @self"
+    - "bossBar   id=endTrialBar message='End Trial' color=PURPLE style=SEGMENTED progress=1.0 players=@self"
+    - "delay     ticks=40"
+    # five waves of Endermen
+    - "eventWave type=ENDERMAN count=8 radius=20 delay=20 rounds=5 yOffset=0 randomDirection=true spawnBehindBlock=true"
+    - "delay     ticks=200"
+    # wrap up
+    - "flagSet   name=completedEndTrial  @self"
+    - "bossBar   id=endTrialBar remove=@self"
+    - "title     title='§aTrial Complete!' subtitle='The path to the Dragon awaits…' fadeIn=10 stay=50 fadeOut=10  @self"
+    - "sound     name=ENTITY_PLAYER_LEVELUP  volume=1.0  pitch=1.0  @self"
+
+
+# 3) When you slay the Wither, throw a mini‐firework show & set a flag
+boss-death-fireworks:
+  event: EntityDeathEvent
+  condition: "mob:WITHER"
+  cancel: false
+  message: ""
+  script:
+    - "particle type=FIREWORKS_SPARK count=50 radius=4.0 @self"
+    - "sound name=ENTITY_FIREWORK_ROCKET_BLAST volume=1.5 pitch=1.0 @self"
+    - "title title='The Wither is defeated!' subtitle='You are legendary' fadeIn=10 stay=60 fadeOut=10 @self"
+    - "flagSet name=beatWither @self"
+
+
+
+# 5) Every 300 ticks remind anyone holding coal to stoke their furnaces
+furnace-reminder:
+  interval: 300
+  condition: "item:COAL"
+  script:
+    - "sound name=ENTITY_EXPERIENCE_ORB_PICKUP volume=0.8 pitch=1.2 @self"
+    - "actionbar text='Keep that furnace burning!' @self"
+    - "title title='' subtitle='Don’t run out of fuel!' fadeIn=5 stay=30 fadeOut=5 @self"
+
+# Freeze effect in snowy/icy biomes
+cold-biome-freeze:
+  interval: 100
+  condition: "biome:SNOWY_TUNDRA|ICE_SPIKES|FROZEN_RIVER"
+  script:
+    - "effect type=SLOW duration=80 amplifier=1 @self"
+    - "effect type=MINING_FATIGUE duration=80 amplifier=0 @self"
+    - "particle name=SNOW_SHOVEL count=10 radius=1.0 @self"
+    - "sound name=ENTITY_PLAYER_HURT_FREEZE volume=0.5 pitch=1.0 @self"
+    - "title title='§bYou’re freezing!' subtitle='Find warmth quickly…' fadeIn=5 stay=20 fadeOut=5 @self"
+
+# Heat fatigue in desert biome
+desert-heat-fatigue:
+  interval: 100
+  condition: "biome:DESERT|DESERT_HILLS"
+  script:
+    - "effect type=HUNGER duration=80 amplifier=0 @self"
+    - "effect type=SLOWNESS duration=80 amplifier=0 @self"
+    - "particle name=SMOKE_NORMAL count=5 radius=0.5 @self"
+    - "sound name=ENTITY_PLAYER_HURT_DROWN volume=0.4 pitch=1.2 @self"
+    - "actionbar text='§6The sun drains your strength…' @self"
+
+swamp-miasma:
+  interval: 120
+  condition: "biome:SWAMP|MANGROVE_SWAMP"
+  script:
+    - "effect type=SLOWNESS duration=100 amplifier=0 @self"
+    - "effect type=NAUSEA duration=60 amplifier=0 @self"
+    - "particle name=SMOKE_LARGE count=3 radius=1.0 @self"
+
+cave-echoes:
+  interval: 200
+  condition: "biome:STONE_SHORE|DARK_FOREST_HILLS|MOUNTAIN_EDGE"
+  script:
+    - "sound name=ENTITY_BAT_TAKEOFF volume=0.7 pitch=0.5 @self"
+    - "particle name=DRIPPING_WATER count=5 radius=1.5 @self"
+    - "actionbar text='§7You hear distant drips…' @self"
+
+storm-watch:
+  interval: 100
+  condition: "weather:rain|weather:thunder"
+  script:
+    - "sound name=ENTITY_LIGHTNING_BOLT_THUNDER volume=0.3 pitch=0.6 @self"
+    - "particle name=EXPLOSION_NORMAL count=1 radius=0.5 @self"
+    - "actionbar text='§9Storm’s rolling in… stay dry!' @self"
