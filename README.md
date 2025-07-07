@@ -503,6 +503,8 @@ Full examples are available in the `examples/` folder.
 I welcome pull requests, bug reports and feature ideas!  
 Please fork the repo, create a branch and submit via GitHub.
 
+If you like the work I do and would like to be involved in potential tests, events or just keep up to date with the status of the plugin, head over to my [patreon](https://www.patreon.com/DraconicKnight)
+
 ---
 
 ## 📬 Support
