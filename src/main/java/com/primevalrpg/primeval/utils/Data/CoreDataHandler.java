@@ -1,6 +1,8 @@
 package com.primevalrpg.primeval.utils.Data;
 
 import com.primevalrpg.primeval.PrimevalRPG;
+import com.primevalrpg.primeval.core.enums.LoggerLevel;
+import com.primevalrpg.primeval.utils.Logger.RPGLogger;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -19,13 +21,12 @@ public class CoreDataHandler {
     private static YamlConfiguration DataConfig;
 
     private CoreDataHandler() {
-        // private constructor to enforce singleton
         instance = this;
         load();
         loadSettings();
     }
 
-    /** Call once in onEnable() */
+    // Enabled once
     public static void initialize(PrimevalRPG plugin) {
         configDataFile = new File(plugin.getDataFolder(), "config.yml");
         DataConfig = YamlConfiguration.loadConfiguration(configDataFile);
@@ -40,14 +41,12 @@ public class CoreDataHandler {
         DataConfig = YamlConfiguration.loadConfiguration(configDataFile);
     }
 
-    /** Load values from disk into the static fields */
     private void loadSettings() {
         isEnabled      = DataConfig.getBoolean("customMobsEnabled", true);
         levelingEnable = DataConfig.getBoolean("levelingEnable", true);
         debugMode      = DataConfig.getBoolean("debugMode", false);
     }
 
-    /** Write the current static fields back to disk */
     public static void saveSettings() {
         DataConfig.set("customMobsEnabled", isEnabled);
         DataConfig.set("levelingEnable", levelingEnable);
@@ -55,21 +54,17 @@ public class CoreDataHandler {
         try {
             DataConfig.save(configDataFile);
         } catch (IOException e) {
-            PrimevalRPG.getInstance()
-                    .getLogger()
-                    .severe("Could not save config.yml: " + e.getMessage());
+            RPGLogger.get().log(LoggerLevel.ERROR,">>> Could not save config.yml: " + e.getMessage() + " <<<");
         }
     }
 
-    /** Reload from disk (useful if you want to detect external edits) */
+    // Reloads values
     public void reloadConfig() {
         try {
             DataConfig.load(configDataFile);
             loadSettings();
         } catch (Exception e) {
-            PrimevalRPG.getInstance()
-                    .getLogger()
-                    .severe("Could not reload config.yml: " + e.getMessage());
+                RPGLogger.get().log(LoggerLevel.ERROR,">>> Could not reload config.yml: " + e.getMessage() + " <<<");
             e.printStackTrace();
         }
     }
