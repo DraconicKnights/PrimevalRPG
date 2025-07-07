@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class NameTagListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        // initialize their tag on join
         NameTagUtil.updateNameTag(event.getPlayer());
     }
 

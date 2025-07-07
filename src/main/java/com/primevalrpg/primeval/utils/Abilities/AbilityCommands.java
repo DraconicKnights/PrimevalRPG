@@ -46,7 +46,7 @@ public class AbilityCommands {
                 .execute(this::execShockwave)
                 .register();
 
-        ScriptEventAPI.onEntityEvent(PrimevalRPG.getInstance(), CreatureSpawnEvent.class, List.of("actionbar text='§5The End Portal glows with cosmic energy…' @self"));
+        //ScriptEventAPI.onEntityEvent(PrimevalRPG.getInstance(), CreatureSpawnEvent.class, List.of("actionbar text='§5The End Portal glows with cosmic energy…' @self"));
     }
 
     private void execLaunchUp(ScriptCommand cmd, ScriptContext ctx) {

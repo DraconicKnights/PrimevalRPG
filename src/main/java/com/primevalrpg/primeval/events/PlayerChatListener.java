@@ -14,7 +14,6 @@ public class PlayerChatListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         if (!CoreDataHandler.levelingEnable) return;
         String prefix = NameTagUtil.getChatPrefix(e.getPlayer());
-        // %2$s is the raw message
         e.setFormat(prefix + "%2$s");
     }
 

@@ -44,69 +44,14 @@ public class CustomEntitySpawnEvent implements Listener {
 
                 List<ItemStack> lootToDrop = customMob.getLootTable().rollLoot();
                 // Log the loot to be dropped
-                PrimevalRPG.getInstance().CustomMobLogger("Loot to be dropped: " + lootToDrop.toString(), LoggerLevel.INFO);
+                PrimevalRPG.getInstance().CustomMobLogger("Loot to be dropped: " + lootToDrop.toString(), LoggerLevel.DEBUG);
 
                 List<ItemStack> drops = event.getDrops();
                 drops.clear();
                 drops.addAll(lootToDrop);
 
             } else {
-                PrimevalRPG.getInstance().CustomMobLogger("CustomMob is null", LoggerLevel.INFO);
-            }
-        }
-
-
-        // Handle specifically for boss entities
-        if (CustomEntityArrayHandler.getBossEntities().containsKey(entity)) {
-            PrimevalRPG.getInstance().CustomMobLogger("Entity found in BossEntities", LoggerLevel.INFO);
-            BossMob bossMob = CustomEntityArrayHandler.getBossEntities().get(entity);
-            if (bossMob != null) {
-                List<ItemStack> lootToDrop = bossMob.getLootTable().rollLoot();
-                // Log the loot to be dropped
-                PrimevalRPG.getInstance().CustomMobLogger("Loot to be dropped: " + lootToDrop.toString(), LoggerLevel.INFO);
-
-                List<ItemStack> drops = event.getDrops();
-                drops.clear();
-                drops.addAll(lootToDrop);
-                CustomEntityArrayHandler.getBossEntities().remove(entity);
-            } else {
-                PrimevalRPG.getInstance().CustomMobLogger("BossMob is null", LoggerLevel.INFO);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onEntityMove(EntityMoveEvent event) {
-        if (CustomEntityArrayHandler.getCustomEntities().containsKey(event.getEntity())) {
-            CustomMob customMob = CustomEntityArrayHandler.getCustomEntities().get(event.getEntity());
-            Region mobRegion = customMob.getRegion();
-            if (mobRegion != null && !mobRegion.isLocationInRegion(customMob.getEntity().getLocation())) {
-                Location safeLocation = event.getFrom();
-
-                if(safeLocation.distanceSquared(customMob.getEntity().getLocation()) > 1e-4) { {
-                    Bukkit.getScheduler().runTaskLater(PrimevalRPG.getInstance(), new Runnable(){
-                        public void run(){
-                            customMob.getEntity().teleport(safeLocation);
-                        }
-                    }, 1L);
-
-                    Bukkit.getScheduler().runTaskLater(PrimevalRPG.getInstance(), new Runnable(){
-                        public void run(){
-                            customMob.getEntity().teleport(safeLocation);
-                        }
-                    }, 5L);
-                }}
-
-                /*if(safeLocation.distanceSquared(customMob.getEntity().getLocation()) > 1e-4) {
-                    Vector pushBack = safeLocation.toVector().subtract(customMob.getEntity().getLocation().toVector()).normalize();
-
-                    if (Double.isFinite(pushBack.getX()) && Double.isFinite(pushBack.getY()) && Double.isFinite(pushBack.getZ())) {
-                        customMob.getEntity().setVelocity(pushBack);
-                    } else {
-                        // Error check to avoid console spamming
-                        System.out.println("Warning: Non-finite push back vector, Error check");
-                    }
-                }*/
+                PrimevalRPG.getInstance().CustomMobLogger("CustomMob is null", LoggerLevel.ERROR);
             }
         }
     }
@@ -118,7 +63,6 @@ public class CustomEntitySpawnEvent implements Listener {
         CustomMob customMob = CustomEntityArrayHandler.getCustomEntities().get(event.getEntity());
         LivingEntity entity = (LivingEntity) event.getEntity();
 
-        // pick icon for the mob's element
         String elemColor;
         String icon;
         switch (customMob.getElementType()) {
@@ -210,7 +154,7 @@ public class CustomEntitySpawnEvent implements Listener {
     public void onCustomEntity(CustomEntityEvent customEntityEvent) {
         CustomMob customMob = customEntityEvent.getCustomMob();
 
-        PrimevalRPG.getInstance().CustomMobLogger("Entity: " + customMob.getEntityType() + " Has spawned near player: " + customEntityEvent.getPlayer().getName() + " Type: " + customMob.getName(), LoggerLevel.INFO);
+        PrimevalRPG.getInstance().CustomMobLogger("Entity: " + customMob.getEntityType() + " Has spawned near player: " + customEntityEvent.getPlayer().getName() + " Type: " + customMob.getName(), LoggerLevel.DEBUG);
     }
 
     private int calculateMinSpawnDistance(Player player) {

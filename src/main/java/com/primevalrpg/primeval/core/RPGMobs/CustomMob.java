@@ -182,7 +182,7 @@ public class CustomMob implements Serializable {
                 loot.addItem(itemDrop.getItem(), itemDrop.getDropChance());
             }
         } else {
-            PrimevalRPG.getInstance().CustomMobLogger("No loot drops items found", LoggerLevel.INFO);  // Just for debug
+            PrimevalRPG.getInstance().CustomMobLogger("No loot drops items found", LoggerLevel.DEBUG);  // Just for debug
         }
 
         this.setLootTable(loot);

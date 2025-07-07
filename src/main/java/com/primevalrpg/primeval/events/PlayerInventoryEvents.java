@@ -26,30 +26,4 @@ public class PlayerInventoryEvents implements Listener {
         BaseMenu menu = (BaseMenu) event.getInventory().getHolder();
         menu.onClick(event);
     }
-
-    @EventHandler
-    public void onInventoryClickMobListMenu(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof MobListMenu)) return;
-
-        Player player = (Player) event.getWhoClicked();
-
-        event.setCancelled(true);
-
-        ItemStack clickedItem = event.getCurrentItem();
-        if (clickedItem != null) {
-            ItemMeta meta = clickedItem.getItemMeta();
-            if (meta != null && meta.hasDisplayName()) {
-                String mobNameId = meta.getDisplayName();
-
-                CustomMob mob = CustomEntityData.getCustomMobByName(mobNameId);
-
-                if (mob != null) {
-                    CustomMobManager.getInstance().setMobLevelAndSpawn(player, mob, player.getLocation());
-                    PrimevalRPG.getInstance().CustomMobLogger("Spawning entity at player: " + player.getName(), LoggerLevel.INFO);
-                } else {
-                    PrimevalRPG.getInstance().CustomMobLogger("Mob not found: " + mobNameId, LoggerLevel.ERROR);
-                }
-            }
-        }
-    }
 }
