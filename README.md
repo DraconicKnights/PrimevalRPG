@@ -352,7 +352,7 @@ You can also use numeric tokens in conditional checks:
 
 ---
 
-### 5) Example: Implementing World & Server Tokens
+### 5) Example: Implementing Singleton Tokens
 
 ```yaml
       - >-
