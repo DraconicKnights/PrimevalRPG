@@ -199,9 +199,9 @@ Minecraft runs at 20 ticks per second. All timing parameters below (cooldowns, d
 
 ```yaml
 # TIMING (TICKS):
+# 0.5 seconds = 10 ticks
 # 1 second = 20 ticks
 # 5 seconds = 100 ticks
-# 0.5 seconds = 10 ticks
 
 ```
 ---
@@ -238,7 +238,6 @@ Minecraft runs at 20 ticks per second. All timing parameters below (cooldowns, d
 | flagSet          | —       | Set a custom boolean flag                   | name=<String>, targets=<@self\|@nearby,…>                                                                     |
 | flagClear        | —       | Clear a custom boolean flag                 | name=<String>, targets=<@self\|@nearby,…>                                                                     |
 | cancelEvent      | —       | Cancel the current Bukkit event             | none                                                                                                          |
-| gateDimension    | —       | Block or allow portal travel by flag        | dimension=<OVERWORLD\|NETHER\|END>, flag=<String>, message=<String>                                           |
 | eventWave        | —       | Spawn successive waves of entities          | type=<EntityType>, count=<int>, radius=<double>, delay=<ticks>, rounds=<int>                                  |
 | repeat           | —       | Repeat a sub-command                        | count=<int>, delay=<ticks>, action="<full command>"                                                           |
 | message          | —       | Send chat messages to targets               | text=<String> (supports color codes)                                                                          |
@@ -479,7 +478,7 @@ furnace-reminder:
 ## 👥 Permissions
 
 - `primeval.admin` — full access
-- `primeval.default.*` — use all abilities
+- `primeval.default` — base access
 
 Customize via your favorite permissions plugin.
 
