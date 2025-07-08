@@ -25,7 +25,13 @@ public class CustomItemHandler {
     private static YamlConfiguration cfg;
     private static final Map<String, ItemStack> items = new HashMap<>();
 
-    /** Call this in onEnable() */
+    /**
+     * Initializes the custom item handling by loading the custom items configuration.
+     * If the custom-items.yml file does not exist, it will be created by saving the default resource.
+     * The method also loads the custom items from the configuration file into memory.
+     *
+     * @param plugin The plugin instance used to save the default configuration file and access the plugin's resources.
+     */
     public static void initialize(PrimevalRPG plugin) {
         if (!dataFile.exists()) {
             plugin.saveResource("custom-items.yml", false);
@@ -34,6 +40,27 @@ public class CustomItemHandler {
         loadItems();
     }
 
+    /**
+     * Loads custom items from the configuration file into memory.
+     * Reads item definitions from the `customItems` section of the configuration,
+     * parses them, and stores them as `ItemStack` objects in a map for later retrieval.
+     * The method supports various item attributes such as material, amount, display name, lore,
+     * enchantments, unbreakable flag, hide flags, and persistent data tags.
+     *
+     * Functionality steps:
+     * 1. Clears the existing `items` map.
+     * 2. Checks for the presence of the `customItems` section in the configuration.
+     *    If not found, the method terminates without loading items.
+     * 3. Iterates through the `customItems` section, parsing each item's key and configuration.
+     *    For each item:
+     *      - Sets material and amount.
+     *      - Configures display name (if provided).
+     *      - Adds lore (if provided).
+     *      - Adds enchantments (if provided).
+     *      - Sets the unbreakable flag and applies hide flags (if specified).
+     *      - Adds persistent data container tags for custom metadata (if specified).
+     * 4. Stores the configured `ItemStack` in the `items` map, keyed by the item's name.
+     */
     private static void loadItems() {
         items.clear();
         if (!cfg.isConfigurationSection("customItems")) return;
@@ -42,24 +69,20 @@ public class CustomItemHandler {
         for (String key : root.getKeys(false)) {
             ConfigurationSection sect = root.getConfigurationSection(key);
 
-            // 1) material & amount
             Material mat = Material.valueOf(sect.getString("material", "STONE"));
             int amt = sect.getInt("amount", 1);
             ItemStack stack = new ItemStack(mat, amt);
             ItemMeta meta = stack.getItemMeta();
             if (meta == null) continue;
 
-            // 2) display name
             if (sect.isString("displayName")) {
                 meta.setDisplayName(sect.getString("displayName"));
             }
 
-            // 3) lore
             if (sect.isList("lore")) {
                 meta.setLore(sect.getStringList("lore"));
             }
 
-            // 4) enchantments
             if (sect.isConfigurationSection("enchantments")) {
                 for (String enchKey : sect.getConfigurationSection("enchantments").getKeys(false)) {
                     int lvl = sect.getInt("enchantments." + enchKey, 0);
@@ -70,7 +93,6 @@ public class CustomItemHandler {
                 }
             }
 
-            // 5) unbreakable + hide flags
             if (sect.isBoolean("unbreakable") && sect.getBoolean("unbreakable")) {
                 meta.setUnbreakable(true);
             }
@@ -78,7 +100,7 @@ public class CustomItemHandler {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
             }
 
-            // 6) persistent-data
+            // 6) persistent-data for NBT data and use within other parts of the plugin
             if (sect.isConfigurationSection("persistentData")) {
                 PersistentDataContainer pdc = meta.getPersistentDataContainer();
                 ConfigurationSection pdcs = sect.getConfigurationSection("persistentData");
