@@ -1,0 +1,165 @@
+abilities:
+  lightning_strike:
+    cooldown: 60
+    script:
+      - "lightning @self"
+      - "sound name=ENTITY_ENDER_DRAGON_GROWL volume=1.0 pitch=1.0 @nearby[8]"
+      - "lightning_safe @nearestPlayer[12]"
+      - "on EntityDeathEvent: lightning @nearby"
+
+  storm_blast:
+    cooldown: 80
+    script:
+      - "fireball direction=towards speed=1.5 @nearestPlayer"
+      - "sound name=ENTITY_GENERIC_EXPLODE volume=1.0 pitch=1.0 @allPlayers"
+
+  dash_teleport:
+    cooldown: 100
+    script:
+      - "teleport @self location=@nearestPlayer offsetX=0 offsetY=0 offsetZ=2"
+      - "sound name=ENTITY_ENDERMAN_TELEPORT volume=1.0 pitch=1.0 @nearby"
+
+  particle_ring:
+    cooldown: 40
+    script:
+      - "particle name=SPELL_WITCH count=30 radius=2 @self"
+      - "sound name=ENTITY_WITCH_AMBIENT volume=0.5 pitch=1.2 @self"
+
+  healing_aura:
+    cooldown: 120
+    script:
+      - "heal amount=10 @self"
+      - "heal amount=5 @nearby"
+      - "particle name=HEART count=10 @self"
+
+  slow_field:
+    cooldown: 90
+    script:
+      - "effect type=SLOW duration=60 amplifier=1 @nearby"
+      - "particle name=CLOUD count=20 @nearby"
+      - "sound name=ENTITY_ENDER_DRAGON_GROWL volume=1.0 pitch=0.8 @nearby"
+
+  EliteGuard:
+    cooldown: 50
+    script:
+      # every tick, slowly regenerate health
+      - "heal amount=0.2 @self"
+      # when it’s hit, poison the attacker
+      - "on EntityDamageEvent: effect type=POISON duration=60 amplifier=1 @attacker"
+      # on direct damage, knock the attacker back
+      - "on EntityDamageByEntityEvent: knockback strength=1.5 @attacker"
+      # on death, drop a custom badge
+      - "on EntityDeathEvent: drop_item item=IRON_INGOT displayName='§fGuard Badge' lore='Taken from a fallen guard' glow=false @self"
+      # and play a level-up chime for nearby players
+      - "on EntityDeathEvent: sound name=ENTITY_PLAYER_LEVELUP volume=1.0 pitch=0.8 @nearbyPlayers"
+      # spawn little hearts on spawn
+      - "on EntitySpawnEvent: particle type=HEART amount=5 speed=0.1 radius=2 @nearby"
+
+  StormBeast:
+    cooldown: 80
+    script:
+      # every tick, keep itself surrounded by storm clouds
+      - "particle type=CLOUD amount=12 speed=0.2 radius=4 @self"
+      # every tick, throw a small lightning bolt (safe = no fire/damage)
+      - "lightning_safe @self"
+      # and teleport away in a random direction
+      - "on EntityDamageEvent: teleport x=~5 y=0 z=~-5 @self"
+      # on death, explode with particles and drops
+      - "on EntityDeathEvent: particle type=EXPLOSION_NORMAL amount=20 speed=0.3 @nearbyAll"
+      - "on EntityDeathEvent: drop_item item=DIAMOND displayName='§bStorm Gem' lores='Essence of the tempest' glow=true @self"
+      # finally, spawn three minions at its corpse
+      - "on EntityDeathEvent: spawn type=ZOMBIE count=3 @self"
+
+  hulk_jump:
+    cooldown: 300
+    script:
+      # Slow falling for 6s → 120 ticks
+      - "effect type=SLOW_FALLING duration=120 amplifier=1 @self"
+      - "effect type=LEVITATION  duration=7 amplifier=17 @self"
+      # Knock nearby entities away (within 10 blocks)
+      - "knockback direction=away strength=2.5 @nearby[10]"
+      # Play explosion sound at your location
+      - "effect type=LEVITATION duration=5 amplifier=15 @nearbyplayers[15]"
+      - "sound name=ENTITY_GENERIC_EXPLODE volume=1.0 pitch=1.0 @nearby"
+      # Create a shockwave of block-crack particles around nearby players
+      - 'repeat count=5 delay=5 action="particle name=BLOCK_CRACK data=DIRT count=10 @nearbyPlayers[10]"'
+      - 'shockwave type=DIRT,STONE innerRadius=0.25 radius=5 speed=0.5 height=0.5 delay=7 @self'
+      - 'repeat count=1 delay=40 action="damage amount=15 @nearby[30]'
+      - "effect type=SLOW duration=120 amplifier=2 @nearbyPlayers[30]"
+      - "on EntityDeathEvent: lightning_safe @self"
+      - "on EntityDeathEvent: drop_item item=EMERALD displayName='§aEarth Gem' lores='Essence of Gia' amount=1 clear=true glow=true @self"
+
+  entity_death_lightning:
+    cooldown: 0
+    script:
+      - "on EntityDeathEvent: lightning_safe @self"
+      - "on EntityDeathEvent: drop_item item=EMERALD displayName='§aCustom Item' lores='CustomLore' amount=1 clear=true glow=true @self"
+
+  Nether_repellent:
+     cooldown: 0
+     script:
+      - "effect type=FIRE_RESISTANCE duration=1000 amplifier=10 @self"
+
+  AdaptiveStormBeast:
+    cooldown: 80
+    script:
+      # 1) SELF info: name, health, maxHealth, healthPercent, coords, world
+      - "message text=\"[SELF] @self.getName() HP=@self.health()/@self.maxHealth() (@self.healthPercent()%) Loc=(@self.x(),@self.y(),@self.z()) World=@self.world()\"@nearbyPlayers[20]"
+
+      # 2) COLLECTION summaries
+      - "message text=\"[COLL] All entities (@allEntities.size()): @allEntities.names()\" @nearbyPlayers[20]"
+      - "message text=\"[COLL] All players (@allPlayers.size()): @allPlayers.names() | random: @allPlayers.randomName()\" @nearbyPlayers[20]"
+      - "message text=\"[COLL] All mobs (@allMobs.size()): @allMobs.names() | random: @allMobs.randomName()\"@nearbyPlayers[20]"
+
+      # 3) NEARBY‐PLAYERS count
+      - "message text=\"[NEARBY] Players within 20 blocks: @nearbyPlayers.size()\" @nearbyPlayers[20]"
+
+      # 4) Test with negation and equality
+      - >-
+        condition if='!(@nearbyPlayers.size() == 0)'
+        then='message text="Player(s) detected: @nearbyPlayers.size()" @nearbyPlayers[20]'
+        else='message text="No players in sight." @nearbyPlayers[20]'
+
+      - >-
+        condition if='@self.health() < 10'
+        then='message text="§cHelp! I''m almost dead!" @nearbyPlayers[20]'
+        else='message text="§aI''m fine for now." @nearbyPlayers[20]'
+
+  fire_ring:
+    cooldown: 100
+    script:
+      - 'knockback strength=1 direction=towards @nearbyPlayers[20]'
+      - 'title title="§bSwift Wind" subtitle="Move like the breeze" fadeIn=10 stay=60 fadeOut=20 @nearbyPlayers[15]'
+      - 'actionbar text="§eSpeed ×2 active!" @nearbyPlayers[15]'
+      - 'repeat count=5 delay=5 action="particle name=LAVA count=10 radius=2 @self"'
+      - 'shockwave type=FIRE,SOUL_FIRE innerRadius=0.15 radius=3 speed=0.5 height=0.3 delay=7 @self'
+      - 'repeat count=3 delay=7 action="damage amount=10 @nearby[30]'
+      - 'ignite duration=80 @nearbyPlayers[20]'
+      - "effect type=LEVITATION duration=10 amplifier=10 @self"
+      - "effect type=SLOWFALLING duration=20 amplifier=10 @self"
+
+  NetherGatekeeper:
+    cooldown: 200
+    script:
+      - "on EntitySpawnEvent: eventWave type=MAGMA_CUBE count=4 radius=6 delay=40 rounds=3 @self"
+      - "on EntitySpawnEvent: title title='§4The Gatekeeper Awakes' subtitle='Survive its fury!' fadeIn=10 stay=60 fadeOut=10 @nearbyPlayers[25]"
+
+      - "on EntityDamageEvent: message text='Gatekeeper HP: @self.healthPercent()%' @attacker"
+
+      - "on EntityDamageEvent: condition if='@self.healthPercent() <= 50 && !@self.flag(phase2)' flagSet name=phase2 @self"
+      - "on EntityDamageEvent: condition if='@self.flag(phase2)' sound name=ENTITY_ELDER_GUARDIAN_CURSE volume=1.0 pitch=0.8 @nearbyPlayers[25]"
+      - "on EntityDamageEvent: condition if='@self.flag(phase2)' eventWave type=BLAZE count=3 radius=4 delay=30 rounds=5 @self"
+
+      # 3) When it dies, mark the killer as having defeated it
+      - "on EntityDeathEvent: flagSet name=beatNetherGatekeeper @killer"
+      # 3b) Drop a custom Nether Key item
+      - "on EntityDeathEvent: drop_item item=TRIPWIRE_HOOK amount=1 displayName='§6Nether Key' lore='Opens the ancient gate' glow=true @self"
+      # 3c) Fireworks & explosion effect
+      - "on EntityDeathEvent: particle name=EXPLOSION_HUGE count=1 radius=0 @self"
+      - "on EntityDeathEvent: sound name=ENTITY_GENERIC_EXPLODE volume=1.0 pitch=1.0 @nearbyPlayers"
+
+      # 3d) Give the killer a victory title
+      - "on EntityDeathEvent: title title='§aYou have slain the Gatekeeper!' fadeIn=10 stay=80 fadeOut=20 @killer"
+
+      # 5) Environmental hazards—spawn falling obsidian pillars around players
+      - "on EntityDamageByEntityEvent: fallingblock type=OBSIDIAN location=@attacker dropItem=false gravity=true velocity=0,0.5,0"

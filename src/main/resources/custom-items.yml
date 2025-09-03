@@ -1,0 +1,8 @@
+customItems:
+  my_shiny_gem:
+    material: DIAMOND
+    displayName: "&bGem of Power"
+    glow: true
+    lore:
+      - "&7A mystical gem"
+      - "&7shines with power"

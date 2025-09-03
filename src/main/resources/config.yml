@@ -1,0 +1,9 @@
+#Determines if Debug mode should be enabled within the Plugin's Main Logger.
+#Good for debuting potential issues or errors.
+debugMode: false
+
+#Determines if leveling is enabled
+levelingEnable: true
+
+#If enabled, custom mobs will be able to spawn naturally
+customMobsEnabled: true

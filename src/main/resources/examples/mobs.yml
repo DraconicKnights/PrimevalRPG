@@ -1,0 +1,11 @@
+#The spawn distance for the custom mobs
+spawningDistanceMin: 25
+spawningDistanceMax: 50
+
+#Spawn Chance and Settings
+mobSpawnChance: 95.0
+caveSpawnChance: 85.0
+maxMobsPerPlayer: 8
+
+#The Custom Mob Data Holder.
+customMobs:

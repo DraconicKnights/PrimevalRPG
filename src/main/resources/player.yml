@@ -1,0 +1,5 @@
+#PlayerData
+
+#Player XP Gain Values
+MOB_KILL_XP: 1.5
+BLOCK_BREAK_XP: 0.5

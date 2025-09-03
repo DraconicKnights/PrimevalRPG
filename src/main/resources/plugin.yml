@@ -1,0 +1,12 @@
+name: PrimevalRPG
+version: '${project.version}'
+main: com.primevalrpg.primeval.PrimevalRPG
+api-version: '1.20'
+author: Dragonoid
+commands:
+  primeval:
+    description: "Main PrimevalRPG command. Available sub‐commands: help, reload, item, region, level, levelxp, resetattributes, spawncustomentity, activeentitycount, playergui, primevalguil, mobgui"
+    usage: "/primeval <help|reload|item|region|level|levelxp|resetattributes|spawncustomentity|activeentitycount|playergui|primevalguil|mobgui> [arguments]"
+    permission: primevalrpg.default
+    aliases: [pv]
+
