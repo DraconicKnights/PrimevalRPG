@@ -1134,7 +1134,31 @@ public class DefaultExecutors {
     }
 
     private void execWorldTime(ScriptCommand cmd,ScriptContext ctx) {
-        long time = (long) cmd.getDouble("time", ctx.self.getWorld().getTime());
+        String rawTimeArg = cmd.getArg("time", "day");
+        long time;
+
+        if (rawTimeArg != null) {
+            switch (rawTimeArg.toLowerCase()) {
+                case "night":
+                    time = 13000;
+                    break;
+                case "day":
+                    time = 1000;
+                    break;
+                case "dawn":
+                    time = 23000;
+                    break;
+                case "dusk":
+                    time = 12000;
+                    break;
+                default:
+                    time = (long) cmd.getDouble("time", ctx.self.getWorld().getTime());
+                    break;
+            }
+        } else {
+            time = ctx.self.getWorld().getTime();
+        }
+
         ctx.self.getWorld().setTime(time);
     }
 
@@ -1250,10 +1274,16 @@ public class DefaultExecutors {
         ctx.self.getWorld().dropItemNaturally(loc, stack);
     }
 
+    // Currently trying to resolve this method call for fixing as their is an issue with the nearby flag
     private void execInvisibility(ScriptCommand cmd, ScriptContext ctx) {
         int duration = (int) cmd.getDouble("duration", 100);
         int amp      = (int) cmd.getDouble("amplifier", 0);
+        RPGLogger.get().info("Nearby entities count: " + ctx.nearby.size());
         for (LivingEntity target : resolveEntities(cmd.targets, ctx.self, ctx.nearby, ctx.event)) {
+            RPGLogger.get().info("Target: " + target);
+            RPGLogger.get().info("Target location: " + target.getLocation());
+            RPGLogger.get().info("Target world: " + target.getWorld());
+            RPGLogger.get().info("Nearby Entity: " + target.getType() + " at " + target.getLocation());
             target.addPotionEffect(new PotionEffect(
                     PotionEffectType.INVISIBILITY,
                     duration,
