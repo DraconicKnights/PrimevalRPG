@@ -8,6 +8,7 @@ import com.primevalrpg.primeval.core.Player.PlayerDataManager;
 import com.primevalrpg.primeval.core.RPGMobs.CustomMob;
 import com.primevalrpg.primeval.core.enums.LoggerLevel;
 import com.primevalrpg.primeval.utils.Arrays.CustomEntityArrayHandler;
+import com.primevalrpg.primeval.utils.Desing.ColourCode;
 import com.primevalrpg.primeval.utils.Handlers.FlagManager;
 import com.primevalrpg.primeval.utils.ItemBuilder;
 import com.primevalrpg.primeval.utils.Logger.RPGLogger;
@@ -722,7 +723,7 @@ public class DefaultExecutors {
         for (LivingEntity e : resolveEntities(cmd.targets, ctx.self, ctx.nearby, ctx.event)) {
             if (!(e instanceof Player)) continue;
             Player p = (Player) e;
-            p.sendActionBar(text);
+            p.sendActionBar(ColourCode.colour(text));
         }
     }
 
@@ -1900,16 +1901,30 @@ public class DefaultExecutors {
         return targets.stream().anyMatch(t -> t.equalsIgnoreCase("@server"));
     }
 
-    /** helper: pulls a double out of "@token[VALUE]" or returns default */
     private static double extractRadius(String token) {
-        int open = token.indexOf('['), close = token.indexOf(']');
-        if (open > 0 && close > open) {
-            try {
-                return Double.parseDouble(token.substring(open + 1, close));
-            } catch (NumberFormatException ignored) { }
+        if (!token.contains("[")) {
+            return DEFAULT_TARGET_RADIUS;
         }
+
+        // Look for all bracket pairs and find numeric ones (radius)
+        int start = 0;
+        while ((start = token.indexOf('[', start)) != -1) {
+            int end = token.indexOf(']', start);
+            if (end == -1) break;
+
+            String content = token.substring(start + 1, end);
+            //treat number as radius
+            try {
+                double radius = Double.parseDouble(content);
+                return Math.max(1.0, radius);
+            } catch (NumberFormatException ignored) {
+            }
+            start = end + 1;
+        }
+
         return DEFAULT_TARGET_RADIUS;
     }
+
 
     // small helpers
     private int parseInt(String raw, int def, int min) {
@@ -1950,25 +1965,42 @@ public class DefaultExecutors {
      * Extracts filters of the form key=val, key<val or key>val from inside [...].
      */
     private static List<Filter> parseFilters(String token) {
-        int start = token.indexOf('[');
-        int end = token.lastIndexOf(']');
-        if (start < 0 || end <= start) return Collections.emptyList();
-        String content = token.substring(start + 1, end);
         List<Filter> filters = new ArrayList<>();
-        for (String part : content.split(",")) {
-            part = part.trim();
-            if (part.contains("=")) {
-                var a = part.split("=", 2);
-                filters.add(new Filter(a[0], "=", a[1]));
-            } else if (part.contains("<")) {
-                var a = part.split("<", 2);
-                filters.add(new Filter(a[0], "<", a[1]));
-            } else if (part.contains(">")) {
-                var a = part.split(">", 2);
-                filters.add(new Filter(a[0], ">", a[1]));
+        if (!token.contains("[")) return filters;
+
+        int start = 0;
+        while ((start = token.indexOf('[', start)) != -1) {
+            int end = token.indexOf(']', start);
+            if (end == -1) break;
+
+            String content = token.substring(start + 1, end);
+
+            try {
+                Double.parseDouble(content);
+                start = end + 1;
+                continue;
+            } catch (NumberFormatException exception) {}
+
+            String op = null;
+            for (String candidate : List.of(">=", "<=", "!=", "==", "=", ">", "<")) {
+                if (content.contains(candidate)) {
+                    op = candidate;
+                    break;
+                }
             }
+
+            if (op != null) {
+                String[] parts = content.split(Pattern.quote(op), 2);
+                if (parts.length == 2) {
+                    filters.add(new Filter(parts[0].trim(), op, parts[1].trim()));
+                }
+            }
+
+            start = end + 1;
         }
+
         return filters;
+
     }
 
     /**
