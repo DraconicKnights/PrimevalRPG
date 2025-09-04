@@ -1278,12 +1278,7 @@ public class DefaultExecutors {
     private void execInvisibility(ScriptCommand cmd, ScriptContext ctx) {
         int duration = (int) cmd.getDouble("duration", 100);
         int amp      = (int) cmd.getDouble("amplifier", 0);
-        RPGLogger.get().info("Nearby entities count: " + ctx.nearby.size());
         for (LivingEntity target : resolveEntities(cmd.targets, ctx.self, ctx.nearby, ctx.event)) {
-            RPGLogger.get().info("Target: " + target);
-            RPGLogger.get().info("Target location: " + target.getLocation());
-            RPGLogger.get().info("Target world: " + target.getWorld());
-            RPGLogger.get().info("Nearby Entity: " + target.getType() + " at " + target.getLocation());
             target.addPotionEffect(new PotionEffect(
                     PotionEffectType.INVISIBILITY,
                     duration,
@@ -1796,6 +1791,7 @@ public class DefaultExecutors {
         );
 
         Set<LivingEntity> out = new HashSet<>();
+
         for (String t : targets) {
             String base = t.contains("[") ? t.substring(0, t.indexOf('[')) : t;
             List<Filter> filters = parseFilters(t);
@@ -1805,10 +1801,12 @@ public class DefaultExecutors {
             switch (base.toLowerCase()) {
 
                 case "@server" -> {
+                    RPGLogger.get().debug("  - Skipping @server target");
                     continue;
                 }
 
                 case "@nearbyplayers" -> {
+                    RPGLogger.get().debug("  - Processing @nearbyplayers");
                     for (LivingEntity e : nearbyAll) {
                         if (e instanceof Player
                                 && e.getLocation().distanceSquared(self.getLocation()) <= r2
@@ -1818,6 +1816,7 @@ public class DefaultExecutors {
                     }
                 }
                 case "@nearby" -> {
+                    RPGLogger.get().debug("  - Processing @nearby");
                     for (LivingEntity e : nearbyAll) {
                         if (e.getLocation().distanceSquared(self.getLocation()) <= r2
                                 && matchesFilters(e, filters)) {
@@ -1826,6 +1825,7 @@ public class DefaultExecutors {
                     }
                 }
                 case "@nearest", "@nearestentity", "@nearestplayer" -> {
+                    RPGLogger.get().debug("  - Processing @nearest");
                     nearbyAll.stream()
                             .filter(e -> !base.contains("player") || e instanceof Player)
                             .filter(e -> e.getLocation().distanceSquared(self.getLocation()) <= r2)
@@ -1836,6 +1836,7 @@ public class DefaultExecutors {
                             .ifPresent(out::add);
                 }
                 case "@attacker" -> {
+                    RPGLogger.get().debug("  - Processing @attacker");
                     if (event instanceof EntityDamageByEntityEvent ede) {
                         Entity dam = ede.getDamager();
                         if (dam instanceof LivingEntity le && matchesFilters(le, filters)) {
@@ -1844,6 +1845,7 @@ public class DefaultExecutors {
                     }
                 }
                 case "@killer" -> {
+                    RPGLogger.get().debug("  - Processing @killer");
                     if (event instanceof EntityDeathEvent ede) {
                         Player k = ede.getEntity().getKiller();
                         if (k instanceof LivingEntity le && matchesFilters(le, filters)) {
@@ -1852,11 +1854,13 @@ public class DefaultExecutors {
                     }
                 }
                 case "@self", "@entity" -> {
+                    RPGLogger.get().debug("  - Processing @self");
                     if (matchesFilters(self, filters)) {
                         out.add(self);
                     }
                 }
                 case "@allentities" -> {
+                    RPGLogger.get().debug("  - Processing @allentities");
                     for (LivingEntity e : nearbyAll) {
                         if (matchesFilters(e, filters)) {
                             out.add(e);
@@ -1864,6 +1868,7 @@ public class DefaultExecutors {
                     }
                 }
                 case "@allplayers" -> {
+                    RPGLogger.get().debug("  - Processing @allplayers");
                     for (LivingEntity e : nearbyAll) {
                         if (e instanceof Player && matchesFilters(e, filters)) {
                             out.add(e);
@@ -1871,6 +1876,7 @@ public class DefaultExecutors {
                     }
                 }
                 case "@allmobs" -> {
+                    RPGLogger.get().debug("  - Processing @allmobs");
                     for (LivingEntity e : nearbyAll) {
                         if (!(e instanceof Player) && matchesFilters(e, filters)) {
                             out.add(e);
