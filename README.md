@@ -9,7 +9,7 @@ PrimevalRPG is a powerful Bukkit/Spigot plugin that transforms your Minecraft se
 ## 🚀 Features
 
 - **Custom Items**  
-  Create and manage unique gear via `/pvr item create <key>` or define entries in `custom-items.yml`.  
+  Create and manage unique gear via `/pv item create <key>` or define entries in `custom-items.yml`.  
   • Customize material, display name, glow, lore, NBT data and more.
 
 - **Custom Mobs**  
@@ -42,7 +42,7 @@ PrimevalRPG is a powerful Bukkit/Spigot plugin that transforms your Minecraft se
 
 ## Planned API Support
 
-PrimevalRPG will exposes the Command & Event Handle APIs so you can define your own triggers and in-game commands—then invoke them from any script or global event.
+PrimevalRPG will expose the Command & Event Handle APIs so you can define your own triggers and in-game commands—then invoke them from any script or global event.
 
 ```java
 private void buildCommandExecutionLogic() {
