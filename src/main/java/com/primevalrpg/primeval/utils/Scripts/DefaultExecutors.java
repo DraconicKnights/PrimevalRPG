@@ -2,8 +2,6 @@ package com.primevalrpg.primeval.utils.Scripts;
 
 import com.primevalrpg.primeval.PrimevalRPG;
 import com.primevalrpg.primeval.core.CustomMobManager;
-import com.primevalrpg.primeval.core.Inventory.EventCreation.Scripts.ArgDef;
-import com.primevalrpg.primeval.core.Inventory.EventCreation.Scripts.ScriptCommandDef;
 import com.primevalrpg.primeval.core.Player.PlayerDataManager;
 import com.primevalrpg.primeval.core.RPGMobs.CustomMob;
 import com.primevalrpg.primeval.core.enums.LoggerLevel;
@@ -51,62 +49,6 @@ public class DefaultExecutors {
 
     private static final double DEFAULT_TARGET_RADIUS = 16.0;
     private static final int DEFAULT_MAX_PER_PLAYER = 10;
-
-    private static final Map<String, ScriptCommandDef> COMMAND_DEFS = new LinkedHashMap<>();
-
-    static {
-        // Work in progress, will most likely be changed.
-
-        COMMAND_DEFS.put("fireball",
-                new ScriptCommandDef(
-                        "fireball",
-                        ItemBuilder.CreateCustomItem(Material.FIRE_CHARGE, false, "Fireball", "Launch a fireball"),
-                        List.of(new ArgDef("power", null)),
-                        true
-                )
-        );
-        COMMAND_DEFS.put("lightning",
-                new ScriptCommandDef(
-                        "lightning",
-                        ItemBuilder.CreateCustomItem(Material.TRIDENT, false, "Lightning", "Summon a bolt"),
-                        List.of(),
-                        true
-                )
-        );
-        COMMAND_DEFS.put("sound",
-                new ScriptCommandDef(
-                        "sound",
-                        ItemBuilder.CreateCustomItem(Material.NOTE_BLOCK, false, "Sound", "Play a sound"),
-                        List.of(
-                                // call method to get the list immediately
-                                new ArgDef("name", DefaultExecutors.getAllSoundNames()),
-                                new ArgDef("volume", null),
-                                new ArgDef("pitch",  null)
-                        ),
-                        true
-                )
-        );
-        COMMAND_DEFS.put("delay",
-                new ScriptCommandDef(
-                        "delay",
-                        ItemBuilder.CreateCustomItem(Material.SAND, false, "Delay", "Pause the script"),
-                        List.of(new ArgDef("ticks", null)),
-                        false
-                )
-        );
-
-    }
-
-    /**
-     * Return the raw map so callers can do .values() or .entrySet().
-     */
-    public static Map<String, ScriptCommandDef> getCommandDefinitions() {
-        return COMMAND_DEFS;
-    }
-
-    public static @Nullable ScriptCommandDef getCommandDefinition(String name) {
-        return COMMAND_DEFS.get(name);
-    }
 
     public static List<String> getAllSoundNames() {
         org.bukkit.Sound[] sounds = org.bukkit.Sound.values();

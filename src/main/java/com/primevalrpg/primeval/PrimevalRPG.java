@@ -16,6 +16,7 @@ import com.primevalrpg.primeval.utils.Handlers.EventManager;
 import com.primevalrpg.primeval.utils.Handlers.FlagManager;
 import com.primevalrpg.primeval.utils.Handlers.RegionManager;
 import com.primevalrpg.primeval.utils.Logger.RPGLogger;
+import com.primevalrpg.primeval.utils.ScriptingEngine.EngineHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -69,6 +70,7 @@ public final class PrimevalRPG extends JavaPlugin {
         CoreDataHandler.saveSettings();
     }
 
+
     private void registerPluginCore() {
         new AbilityCommands();
         CustomItemHandler.initialize(this);
@@ -81,6 +83,9 @@ public final class PrimevalRPG extends JavaPlugin {
         new RegionManager();
         new EventManager(this);
         new PlayerAbilityManager(this);
+
+        // Addition of Engine Handler. Will be used for more advanced scripting logic.
+        new EngineHandler();
     }
 
     private void registerObjects() {
@@ -151,6 +156,9 @@ public final class PrimevalRPG extends JavaPlugin {
         Bukkit.getServer().getPluginManager().callEvent(new CustomEntityEvent(player, customMob));
     }
 
+    public void reloadEventManager() {
+        // Recreate your EventManager instance to pick up new events
+    }
 
     public void CustomMobLogger(String log, LoggerLevel loggerLevel) {
         RPGLogger.get().log(loggerLevel, log);
