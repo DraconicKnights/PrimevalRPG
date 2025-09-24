@@ -75,13 +75,8 @@
       </dependency>
       <dependency>
           <groupId>org.graalvm.js</groupId>
-          <artifactId>js</artifactId>
-          <version>22.0.0</version>
-      </dependency>
-      <dependency>
-          <groupId>org.graalvm.js</groupId>
           <artifactId>js-scriptengine</artifactId>
-          <version>22.0.0</version>
+          <version>25.0.0</version>
       </dependency>
   </dependencies>
 </project>

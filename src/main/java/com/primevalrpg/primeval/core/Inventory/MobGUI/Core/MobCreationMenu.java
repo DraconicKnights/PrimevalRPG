@@ -1,4 +1,3 @@
-// MobCreationMenu.java
 package com.primevalrpg.primeval.core.Inventory.MobGUI.Core;
 
 import com.primevalrpg.primeval.core.Inventory.Core.CreationManager;
@@ -22,6 +21,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+/**
+ * Base Mob GUI Creation Menu
+ * Used for Creating/Modifying mob data and accessing other menus
+ */
 public class MobCreationMenu extends BaseMenu {
 
     private static final int ROWS = 5;            // 5 rows × 9 = 45 slots
@@ -56,13 +59,13 @@ public class MobCreationMenu extends BaseMenu {
             }
         }
 
+        // Slot Logic
         // helper bases for rows 1,2,3,4
-        int R1 = 1 * 9;   // slots 9–17
-        int R2 = 2 * 9;   // slots 18–26
-        int R3 = 3 * 9;   // slots 27–35
-        int R4 = 4 * 9;   // slots 36–44 (progress + confirm)
+        int R1 = 1 * 9;
+        int R2 = 2 * 9;
+        int R3 = 3 * 9;
+        int R4 = 4 * 9;
 
-        // 2) row 1: Name, Champion, Health, Spawn%
         setSlot(R1 + 1, Material.NAME_TAG, "Name",
                 session.getNext() == CreationStage.NAME
                         ? "CLICK to type…"
@@ -74,7 +77,6 @@ public class MobCreationMenu extends BaseMenu {
         setSlot(R1 + 7, Material.ENDER_EYE, "Spawn %",
                 session.buildMob().getSpawnChance());
 
-        // 3) row 2: Entity, Combat, Behavior, Equipment
         setSlot(R2 + 1, Material.CREEPER_SPAWN_EGG, "Entity",
                 session.buildMob().getEntityType().name());
         setSlot(R2 + 3, Material.BOW, "Combat",
@@ -84,7 +86,6 @@ public class MobCreationMenu extends BaseMenu {
         setSlot(R2 + 7, Material.IRON_SWORD, "Equipment",
                 session.summaryEquipment());
 
-        // 4) row 3: Armour, Loot, Ability
         setSlot(R3 + 1, Material.LEATHER_CHESTPLATE, "Armour",
                 session.summaryArmour());
         setSlot(R3 + 3, Material.CHEST, "Loot Drops",
@@ -93,29 +94,6 @@ public class MobCreationMenu extends BaseMenu {
                 session.getAbilityTypes());
         setSlot(R3 + 7, Material.END_PORTAL_FRAME, "World",
                 session.summaryDimensions());
-
-        CreationStage[] stages = CreationStage.values();
-        int doneCount = session.getNext().ordinal();
-        int max = Math.min(stages.length, 9);
-
-/*        for (int i = 0; i < max; i++) {
-            boolean done = i < doneCount;
-            Material pane = done
-                    ? Material.LIME_STAINED_GLASS_PANE
-                    : Material.PURPLE_STAINED_GLASS_PANE;
-
-            String raw = stages[i].name()
-                    .replace("_", " ")
-                    .toLowerCase();
-            raw = Character.toUpperCase(raw.charAt(0)) + raw.substring(1);
-
-            String title = ColourCode.colour((done ? "&a" : "&d") + raw);
-            String lore = ColourCode.colour(done ? "&7Done" : "&7Pending");
-
-            inventory.setItem(R4 + i,
-                    ItemBuilder.CreateCustomItem(pane, false, title, lore)
-            );
-        }*/
 
         boolean complete = session.isComplete();
         Material mat = complete ? Material.EMERALD_BLOCK : Material.BARRIER;
@@ -199,35 +177,27 @@ public class MobCreationMenu extends BaseMenu {
             }
             case 19 -> {
                 MenuHistory.open(p, new EntityTypeMenu(p));
-                //new EntityTypeMenu(p).open(p);
             }
             case 21 -> {
                 MenuHistory.open(p, new CombatSettingsMenu(p));
-                //new CombatSettingsMenu(p).open(p);
             }
             case 23 -> {
                 MenuHistory.open(p, new BehaviorSettingsMenu(p));
-               //new BehaviorSettingsMenu(p).open(p);
             }
             case 25 -> {
                 MenuHistory.open(p, new WeaponSettingsMenu(p));
-                //new WeaponSettingsMenu(p).open(p);
             }
             case 28 -> {
                 MenuHistory.open(p, new ArmourMenu(p));
-                //new ArmourMenu(p).open(p);
             }
             case 30 -> {
                 MenuHistory.open(p, new LootMenu(p));
-                //new LootMenu(p).open(p);
             }
             case 32 -> {
                 MenuHistory.open(p, new AbilitySelectionMenu(p));
-                //new AbilitySelectionMenu(p).open(p);
             }
             case 34 -> {
                 MenuHistory.open(p, new DimensionsMenu(p));
-                //new DimensionsMenu(p).open(p);
             }
             case 36 -> {
                 //MenuHistory.goBack(p);

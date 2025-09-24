@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * Custom Entity Data
- * Instantiated upon plugin initialization and passes the data from the yml towards the mob builder
+ * Instantiated upon plugin initialization and passed the data from the yml towards the mob builder
  */
 public class CustomEntityData {
 
@@ -37,10 +37,9 @@ public class CustomEntityData {
             ConfigurationSection mobSect = root.getConfigurationSection(mobKey);
             if (mobSect == null) continue;
 
-            // Convert the entire section tree into a pure Map<String,Object>
+            // Keeping this logic for use to avoid issues.
             Map<String,Object> mobMap = sectionToMap(mobSect);
 
-            // Now every nested Map lookup in fromMap() will be a real java.util.Map
             CustomMob mob = CustomMobCreation.fromMap(mobMap);
             CustomEntityArrayHandler.getRegisteredCustomMobs().put(mob.getMobID(), mob);
         }
@@ -49,16 +48,15 @@ public class CustomEntityData {
     /**
      * Recursively converts a Bukkit ConfigurationSection into
      * a nested Map<String,Object>, so no MemorySection survives.
+     * Should resolve any parsing issues. Worked without use but changes resulted in Dimensions overwriting other mobs and leading to data issues
      */
     private Map<String,Object> sectionToMap(ConfigurationSection section) {
         Map<String,Object> result = new HashMap<>();
         for (String key : section.getKeys(false)) {
             Object val = section.get(key);
             if (val instanceof ConfigurationSection) {
-                // recurse into subsections
                 result.put(key, sectionToMap((ConfigurationSection) val));
             } else {
-                // primitives, lists, enums, etc.
                 result.put(key, val);
             }
         }
@@ -89,12 +87,11 @@ public class CustomEntityData {
 
     /**
      * Completely deletes a custom mob from memory and from mobs.yml, then reloads.
+     * Fully removes the custom mob from the Entity Array Handler and will reload the plugin to ensure it's cleaned up.
      */
     public void removeCustomMob(String mobID, Player player) {
-        // 1) Unregister in memory
         CustomEntityArrayHandler.getRegisteredCustomMobs().remove(mobID);
 
-        // 2) Remove from YAML and save
         YamlConfiguration cfg = MobDataHandler.GetConfig();
         cfg.set("customMobs." + mobID, null);
         try {
@@ -105,11 +102,12 @@ public class CustomEntityData {
             return;
         }
 
-        // 3) Reload into memory
         MobDataHandler.getInstance().ReloadMobsConfig();
 
         player.sendMessage("§aRemoved custom mob \"" + mobID + "\".");
     }
+
+    /// Quick boolean and Values grab for use elsewhere
 
     public boolean isCustomMobsEnabled() {
         return CoreDataHandler.isEnabled;

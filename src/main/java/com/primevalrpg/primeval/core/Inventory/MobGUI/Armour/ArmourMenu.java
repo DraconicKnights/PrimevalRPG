@@ -13,8 +13,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.*;
 
+// Armor menu planned to be re-worked for enchantment and additional data support
+
+/**
+ * Mob GUI Armour Menu
+ * This is used for assigning armour sets and values to the mob
+ */
 public class ArmourMenu extends BaseMenu {
-    private static final int ROWS     = 3;                 // now 3 rows = 27 slots
+    private static final int ROWS     = 3;
     private static final String TITLE = ColourCode.colour("&3&lConfigure Armour");
 
     // pick-slot indices (row 1)
@@ -23,13 +29,13 @@ public class ArmourMenu extends BaseMenu {
     private static final int SLOT_LEGS  = 1*9 + 6;  // 15
     private static final int SLOT_BOOTS = 1*9 + 8;  // 17
 
-    // remove-slot indices (row 2)
+    // remove-slot indices (row 2) for better placement
     private static final int REMOVE_HELM  = 2*9 + 2; // 20
     private static final int REMOVE_CHEST = 2*9 + 4; // 22
     private static final int REMOVE_LEGS  = 2*9 + 6; // 24
     private static final int REMOVE_BOOTS = 2*9 + 8; // 26
 
-    // back-button in bottom row
+    // back-button in bottom row. might re-work all buttons to be a priority of bottom left - would need to re-design some menus for working logic.
     private static final int BACK_SLOT = 2*9 + 1;      // 19
 
     private static final List<Material> ALL_PIECES;

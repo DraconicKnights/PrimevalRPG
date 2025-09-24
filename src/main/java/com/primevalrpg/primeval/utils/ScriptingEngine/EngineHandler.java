@@ -1,7 +1,8 @@
 package com.primevalrpg.primeval.utils.ScriptingEngine;
 
+
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
+
 
 public class EngineHandler {
     private static EngineHandler instance;
@@ -9,7 +10,6 @@ public class EngineHandler {
 
     public EngineHandler() {
         instance = this;
-        engine = new ScriptEngineManager().getEngineByName("graal.js");
     }
 
     public ScriptEngine getEngine() {
