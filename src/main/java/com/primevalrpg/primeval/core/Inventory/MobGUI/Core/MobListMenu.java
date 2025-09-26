@@ -166,8 +166,7 @@ public class MobListMenu extends BaseMenu {
         switch (e.getClick()) {
             case LEFT:
                 CustomMobManager.getInstance().setMobLevelAndSpawn(player, mob, player.getLocation());
-                //mob.spawnEntity(player.getLocation(), mob.getLevel());
-                player.sendMessage(ColourCode.colour("&aSpawned “" + mob.getName() + "”!"));
+                player.sendMessage(ColourCode.colour("&aYou have spawnned: “" + mob.getName() + "&r&a" + "”!"));
                 break;
 
             case RIGHT:
