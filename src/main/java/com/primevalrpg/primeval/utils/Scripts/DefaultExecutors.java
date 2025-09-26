@@ -1076,6 +1076,12 @@ public class DefaultExecutors {
         }
     }
 
+    /**
+     * Re-worked time system.
+     * This should work without issues within script use now and in case of nothing provided will default to current world time
+     * @param cmd
+     * @param ctx
+     */
     private void execWorldTime(ScriptCommand cmd,ScriptContext ctx) {
         String rawTimeArg = cmd.getArg("time", "day");
         long time;
@@ -1217,7 +1223,12 @@ public class DefaultExecutors {
         ctx.self.getWorld().dropItemNaturally(loc, stack);
     }
 
-    // Currently trying to resolve this method call for fixing as their is an issue with the nearby flag
+    /**
+     * Invisibility method call
+     * Method should be resolved now and appears to be working correctly
+     * @param cmd
+     * @param ctx
+     */
     private void execInvisibility(ScriptCommand cmd, ScriptContext ctx) {
         int duration = (int) cmd.getDouble("duration", 100);
         int amp      = (int) cmd.getDouble("amplifier", 0);
@@ -1232,6 +1243,12 @@ public class DefaultExecutors {
         }
     }
 
+    /**
+     * Message command call
+     * Will display a message
+     * @param cmd
+     * @param ctx
+     */
     private void execMessage(ScriptCommand cmd, ScriptContext ctx) {
         String rawText = cmd.getArg("text", "");
 
@@ -1242,7 +1259,7 @@ public class DefaultExecutors {
 
         for (LivingEntity ent : new HashSet<>(rawTargets)) {
             if (ent instanceof Player p) {
-                p.sendMessage(colorize(text));
+                ColourCode.colourAndSend(text, p);
             }
         }
     }
@@ -1335,10 +1352,21 @@ public class DefaultExecutors {
                                 : e.getName())
                         .collect(Collectors.joining(", "));
 
+        ///  === Self Calls === ///
+        ///  This will always be on the caster of the script
+
         if (self != null) {
-            String selfName = self.getCustomName() != null
-                    ? self.getCustomName()
-                    : self.getName();
+            String selfName;
+
+            CustomMob customMob = CustomEntityArrayHandler.getCustomEntities().get(self);
+            if (customMob != null) {
+                selfName = "&r" + customMob.getName() + "&r";
+            } else {
+                selfName = self.getCustomName() != null
+                        ? self.getCustomName()
+                        : self.getName();
+            }
+
             out = out.replaceAll(
                     "@self\\.getName\\(\\)",
                     Matcher.quoteReplacement(selfName)
@@ -1371,14 +1399,13 @@ public class DefaultExecutors {
                     "@self\\.z\\(\\)",
                     Integer.toString(self.getLocation().getBlockZ())
             );
-            // world
+
             World w = self.getWorld();
             out = out.replaceAll(
                     "@self\\.world\\(\\)",
                     Matcher.quoteReplacement(w.getName())
             );
 
-            // facing‐vector (direction player is looking)
             Vector dir = self.getLocation().getDirection();
             out = out.replaceAll(
                     "@self\\.facingX\\(\\)",
@@ -1406,6 +1433,9 @@ public class DefaultExecutors {
             m.appendTail(sb);
             out = sb.toString();
         }
+
+        ///  === Attacker Calls === ///
+        ///  Only called if the entity is being attacked and pared with the EntityDamageByEntity Event
 
         if (attacker != null) {
             String aName = attacker.getCustomName() != null
@@ -1439,6 +1469,8 @@ public class DefaultExecutors {
             m.appendTail(sb);
             out = sb.toString();
         }
+
+        ///  === Nearest Calls === ///
 
         if (nearest != null) {
             String nName = nearest.getCustomName() != null
@@ -1501,6 +1533,8 @@ public class DefaultExecutors {
             out = sb.toString();
         }
 
+        ///  === Killer Calls === ///
+        /// Only called if the entity is killed
 
         if (killer != null) {
             String kName = killer.getCustomName() != null
@@ -1559,6 +1593,8 @@ public class DefaultExecutors {
                 )
         );
 
+        ///  === All Groups === ///
+
         out = out.replaceAll(
                 "@allEntities\\.size\\(\\)",
                 Integer.toString(allEntities.size())
@@ -1585,6 +1621,8 @@ public class DefaultExecutors {
                 Matcher.quoteReplacement(names.apply(allMobs))
         );
 
+        ///  === World Calls === ///
+
         out = out.replaceAll(
                 "@world\\.name\\(\\)",
                 Matcher.quoteReplacement(self.getWorld().getName())
@@ -1594,6 +1632,8 @@ public class DefaultExecutors {
                 "@world\\.time\\(\\)",
                 Matcher.quoteReplacement(self.getWorld().getTime() + "")
         );
+
+        /// === Server Calls === ///
 
         out = out.replaceAll(
                 "@server\\.onlineCount\\(\\)",

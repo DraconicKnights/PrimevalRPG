@@ -44,6 +44,7 @@ import static com.primevalrpg.primeval.core.enums.ElementType.ELEMENT_COLORS;
 public class CustomMob implements Serializable {
 
     private String name;
+    private String displayName;
     private String mobNameID;
     private boolean champion;
     private int level;
@@ -229,6 +230,8 @@ public class CustomMob implements Serializable {
             armorAttr.setBaseValue(defenseValue);
         }
 
+        this.displayName = name;
+
         // Set the custom name with colour codes and health indicator.
         updateDisplayName(entity);
 
@@ -302,7 +305,6 @@ public class CustomMob implements Serializable {
         String redPart   = "|".repeat(empty);
         String healthBar = String.format("&5[&a%s&c%s&5]&r", greenPart, redPart);
 
-        // determine tier color and display text
         String tierColor;
         String levelDisplay;
         if (level <= 10) {
@@ -403,19 +405,17 @@ public class CustomMob implements Serializable {
 
     /**
      * Handles equipping the entity with its weapon and armour.
+     * Method will be re-worked to allow for more functionality
      */
     private void handleEquipment(LivingEntity entity) {
         EntityEquipment equip = entity.getEquipment();
         if (equip == null) return;
 
-        // 1) Equip a weapon in the main hand
         if (weapon != null) {
             ItemStack w = weapon.toItemStack();
             equip.setItemInMainHand(w);
-            // (you can also set drop-chance here) best for setting separately due to issues
         }
 
-        // 2) Equip armour pieces by inspecting their Material
         if (armour != null) {
             for (SerializableItemStack sis : armour) {
                 ItemStack piece = sis.toItemStack();
@@ -447,18 +447,7 @@ public class CustomMob implements Serializable {
         equip.setLeggingsDropChance(0f);
         equip.setBootsDropChance(0f);
 
-        allowCrossbowUse(entity);
     }
-
-    // Needs more work as it doesn't work correctly without confusing the mob AI
-    public void allowCrossbowUse(LivingEntity e) {
-        if (!(e instanceof Mob mob)) return;
-
-        if (mob.getEquipment().getItem(EquipmentSlot.HAND).getType() != Material.CROSSBOW) {
-            return;
-        }
-    }
-
 
     private void levelScale(int level) {
         this.maxHealth = this.baseHealth + (level * 1.5);
@@ -470,6 +459,10 @@ public class CustomMob implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getBaseName() {
+        return displayName;
     }
 
     public String getMobNameID() {

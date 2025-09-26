@@ -154,6 +154,13 @@ public class PieceSelectMenu extends BaseMenu {
             return;
         }
 
+        if (slot == REMOVE_SLOT && page < maxPage) {
+            new PieceSelectMenu(p, workingList, pieceIndex, choices, page + 1)
+                    .open(p);
+            return;
+        }
+
+
         int row = slot / 9, col = slot % 9;
         if (row >= 1 && row <= 4 && col >= 1 && col <= 7) {
             int idx = page * PER_PAGE + (row - 1) * 7 + (col - 1);
