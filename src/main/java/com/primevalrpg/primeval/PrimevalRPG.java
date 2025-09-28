@@ -42,8 +42,6 @@ public final class PrimevalRPG extends JavaPlugin {
 
         setInstance();
 
-        getDataFolder().mkdir();
-
         CoreDataHandler.initialize(this);
 
         RPGLogger.init(this, CoreDataHandler.debugMode);
@@ -154,10 +152,6 @@ public final class PrimevalRPG extends JavaPlugin {
 
     public void TriggerCustomEvent(Player player, CustomMob customMob) {
         Bukkit.getServer().getPluginManager().callEvent(new CustomEntityEvent(player, customMob));
-    }
-
-    public void reloadEventManager() {
-        // Recreate your EventManager instance to pick up new events
     }
 
     public void CustomMobLogger(String log, LoggerLevel loggerLevel) {

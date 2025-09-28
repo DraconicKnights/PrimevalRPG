@@ -16,9 +16,10 @@ import java.util.*;
  */
 @Deprecated
 public class GameEventScheduler extends RunnableCore {
-    private static Map<UUID, SpecialAttack> specialAttacks = new HashMap<>();
     private LivingEntity target;
     private String[] attacks;
+
+    private static Map<UUID, SpecialAttack> specialAttacks = new HashMap<>();
 
     public GameEventScheduler(LivingEntity target, String... attacks) {
         super(PrimevalRPG.getInstance(), 0, 20);
