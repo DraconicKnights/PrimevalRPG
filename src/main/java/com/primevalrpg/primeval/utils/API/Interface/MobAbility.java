@@ -3,12 +3,10 @@ package com.primevalrpg.primeval.utils.API.Interface;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Pretty much obsolete outside a small use case with the new scripting logic.
+ */
 public interface MobAbility {
-    /**
-     * Register/apply this ability to the given mob.
-     * E.g. schedule repeating tasks, potion effects, etc.
-     */
     void apply(LivingEntity mob, JavaPlugin plugin, int mobLevel);
-    void stop();             // Optional: to cancel any scheduled tasks
-
+    void stop();
 }
